@@ -120,3 +120,108 @@ org.eclipse.e4.core.di.InjectionException: Could not find satisfiable constructo
 	at org.eclipse.osgi.container.SystemModule.stop(SystemModule.java:202)
 	at org.eclipse.osgi.internal.framework.EquinoxBundle$SystemBundle$EquinoxSystemModule$1.run(EquinoxBundle.java:165)
 	at java.lang.Thread.run(Thread.java:748)
+!SESSION 2018-11-26 14:19:10.233 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_181
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_GB
+Framework arguments:  -keyring /Users/cbayley/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/cbayley/.eclipse_keyring
+
+!ENTRY org.eclipse.core.net 1 0 2018-11-26 14:19:20.325
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:20.984
+!MESSAGE Using extension model cache located at: /Users/cbayley/Documents/GitHub/fullProcessDemo/.mule/plugins-tmp/repository
+
+!ENTRY org.mule.tooling.ui.contribution.munit 1 1 2018-11-26 14:19:22.845
+!MESSAGE Creating MUnit temporary folder in /var/folders/5x/ypp3494x22d7sjyrkbdvs3lwqqttrc/T/munit-temp-dir
+
+!ENTRY org.mule.tooling.analytics 1 0 2018-11-26 14:19:25.402
+!MESSAGE Analytics starts successfully
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:27.004
+!MESSAGE Number of server definitions: 1
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:27.234
+!MESSAGE Creating tooling instance
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:27.244
+!MESSAGE Copying mule instance as tooling instance
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:29.615
+!MESSAGE Tooling path: /Applications/AnypointStudio.app/Contents/Eclipse/configuration/org.eclipse.osgi/507/data/.runtimes/tooling-21kbnurr
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:29.615
+!MESSAGE Tooling version: 4.1.4
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:29.616
+!MESSAGE Starting tooling instance
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:29.617
+!MESSAGE Tooling startup timeout: 90s
+
+!ENTRY org.mule.tooling.core 1 0 2018-11-26 14:19:49.309
+!MESSAGE Tooling up and running
+
+!ENTRY org.mule.tooling.ui.contribution.munit 1 1 2018-11-26 14:20:15.869
+!MESSAGE Deleting MUnit temporary folder in /var/folders/5x/ypp3494x22d7sjyrkbdvs3lwqqttrc/T/munit-temp-dir
+
+!ENTRY org.mule.tooling.analytics 1 0 2018-11-26 14:20:16.679
+!MESSAGE Analytics shutdown successfully
+
+!ENTRY org.mule.tooling.core 4 0 2018-11-26 14:20:16.690
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Exception in org.mule.tooling.core.MuleCorePlugin.stop() of bundle org.mule.tooling.core.
+	at org.eclipse.osgi.internal.framework.BundleContextImpl.stop(BundleContextImpl.java:855)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.stopWorker0(EquinoxBundle.java:947)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle$EquinoxModule.stopWorker(EquinoxBundle.java:314)
+	at org.eclipse.osgi.container.Module.doStop(Module.java:636)
+	at org.eclipse.osgi.container.Module.stop(Module.java:498)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.decStartLevel(ModuleContainer.java:1675)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:1594)
+	at org.eclipse.osgi.container.SystemModule.stopWorker(SystemModule.java:270)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle$SystemBundle$EquinoxSystemModule.stopWorker(EquinoxBundle.java:147)
+	at org.eclipse.osgi.container.Module.doStop(Module.java:636)
+	at org.eclipse.osgi.container.Module.stop(Module.java:498)
+	at org.eclipse.osgi.container.SystemModule.stop(SystemModule.java:202)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle$SystemBundle$EquinoxSystemModule$1.run(EquinoxBundle.java:165)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.eclipse.e4.core.di.InjectionException: Could not find satisfiable constructor in org.mule.tooling.core.model.MuleProjectComponentManager
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalMake(InjectorImpl.java:408)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.make(InjectorImpl.java:318)
+	at org.eclipse.e4.core.contexts.ContextInjectionFactory.make(ContextInjectionFactory.java:162)
+	at org.mule.tooling.core.utils.EclipseContextHelper.createFromStudioContext(EclipseContextHelper.java:22)
+	at org.mule.tooling.core.model.MuleProjectComponentManager.getInstance(MuleProjectComponentManager.java:27)
+	at org.mule.tooling.core.MuleCorePlugin.stop(MuleCorePlugin.java:328)
+	at org.eclipse.osgi.internal.framework.BundleContextImpl$4.run(BundleContextImpl.java:835)
+	at org.eclipse.osgi.internal.framework.BundleContextImpl$4.run(BundleContextImpl.java:1)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.eclipse.osgi.internal.framework.BundleContextImpl.stop(BundleContextImpl.java:828)
+	... 13 more
+Root exception:
+org.eclipse.e4.core.di.InjectionException: Could not find satisfiable constructor in org.mule.tooling.core.model.MuleProjectComponentManager
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalMake(InjectorImpl.java:408)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.make(InjectorImpl.java:318)
+	at org.eclipse.e4.core.contexts.ContextInjectionFactory.make(ContextInjectionFactory.java:162)
+	at org.mule.tooling.core.utils.EclipseContextHelper.createFromStudioContext(EclipseContextHelper.java:22)
+	at org.mule.tooling.core.model.MuleProjectComponentManager.getInstance(MuleProjectComponentManager.java:27)
+	at org.mule.tooling.core.MuleCorePlugin.stop(MuleCorePlugin.java:328)
+	at org.eclipse.osgi.internal.framework.BundleContextImpl$4.run(BundleContextImpl.java:835)
+	at org.eclipse.osgi.internal.framework.BundleContextImpl$4.run(BundleContextImpl.java:1)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.eclipse.osgi.internal.framework.BundleContextImpl.stop(BundleContextImpl.java:828)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.stopWorker0(EquinoxBundle.java:947)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle$EquinoxModule.stopWorker(EquinoxBundle.java:314)
+	at org.eclipse.osgi.container.Module.doStop(Module.java:636)
+	at org.eclipse.osgi.container.Module.stop(Module.java:498)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.decStartLevel(ModuleContainer.java:1675)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:1594)
+	at org.eclipse.osgi.container.SystemModule.stopWorker(SystemModule.java:270)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle$SystemBundle$EquinoxSystemModule.stopWorker(EquinoxBundle.java:147)
+	at org.eclipse.osgi.container.Module.doStop(Module.java:636)
+	at org.eclipse.osgi.container.Module.stop(Module.java:498)
+	at org.eclipse.osgi.container.SystemModule.stop(SystemModule.java:202)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle$SystemBundle$EquinoxSystemModule$1.run(EquinoxBundle.java:165)
+	at java.lang.Thread.run(Thread.java:748)
