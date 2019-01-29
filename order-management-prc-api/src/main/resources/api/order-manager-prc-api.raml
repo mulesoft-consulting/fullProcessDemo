@@ -1,0 +1,71 @@
+#%RAML 1.0
+title: Order Manager PRC API 
+
+types:
+  Order:
+    properties:
+      customerId: string
+      orderRef: string
+      orderAcceptedDateTime: datetime
+      orderDescription: string
+      orderTotalValue: number
+  Orders:
+    properties:
+      resultCount: integer
+      orders: Order[]
+  OrderShippingData:
+    properties:
+      shippedDateTime: datetime
+      shippingTrackingId: string
+      shippingPartner: string
+  OrderInvoiceData:
+    properties:
+      invoicedDateTime: datetime
+      invoiceAmount: number
+      invoiceId: string
+  OrderPaymentData:
+    properties:
+      paymentDateTime: datetime
+      paymentAmount: number
+      paymentExternalReference: string
+      paymentId: string
+
+/orders:
+  post:
+    body:
+      application/json:
+        type: Order
+    responses:
+      202:
+        body:
+          application/json:
+            example: {"orderId":"A00120180913101112", "orderAcceptedDateTime":"20180913T101112Z"}
+  /{orderId}/shippingData:
+    post:
+      body:
+        application/json:
+          type: OrderShippingData
+      responses:
+        201:
+        403:
+          description: 403 Forbidden will be returned if shippingData is submtted for an order which has already been fulfilled.
+          body:
+            application/json:
+              example: |
+                {"message":"Shipping Data cannot be accepted for order {orderId}, as the order hs already been fulfilled."}
+
+  /{orderId}/invoices:
+    post:
+      body:
+        application/json:
+          type: OrderInvoiceData
+      responses:
+        201:
+
+  /{orderId}/payments:
+    post:
+      body:
+        application/json:
+          type: OrderPaymentData
+      responses:
+        201:

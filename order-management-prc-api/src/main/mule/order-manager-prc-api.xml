@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:orders-system-api="http://www.mulesoft.org/schema/mule/orders-system-api" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/orders-system-api http://www.mulesoft.org/schema/mule/orders-system-api/current/mule-orders-system-api.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:listener-config name="order-manager-prc-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="order-manager-prc-api-config" raml="order-manager-prc-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <orders-system-api:config name="Orders_System_API_Config" doc:name="Orders System API Config" doc:id="89bdefb9-77db-4887-b994-5a271cd9a332" property_host="orders-system-api-db.us-e2.cloudhub.io" property_protocol="HTTP" property_basePath="/api" property_port="80"/>
+	<flow name="order-manager-prc-api-main">
+        <http:listener config-ref="order-manager-prc-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="order-manager-prc-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="order-manager-prc-api-console">
+        <http:listener config-ref="order-manager-prc-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="order-manager-prc-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="post:\orders:application\json:order-manager-prc-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="b4f62b0f-15fc-43bd-a9a4-a466ab5453cf">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	customerId: payload.customerId,
+	orderTotalValue: payload.orderTotalValue,
+	orderDescription: payload.orderDescription,
+	status: "Submitted",
+	orderAcceptedDateTime: now(),
+	orderRef: payload.orderRef
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<orders-system-api:create-order doc:name="Create order" doc:id="6dce5f1f-f46a-4a05-8d43-9a9c5d7d9bc8" config-ref="Orders_System_API_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="501537dc-0c8d-4eda-a681-4ad3480a20c3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	orderId: payload.orderId,
+	orderAcceptedDateTime: now()
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="post:\orders\(orderId)\invoices:application\json:order-manager-prc-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" doc:id="84ea784d-ef86-4f79-8176-6d9ad04126a2">
+            <ee:variables>
+                <ee:set-variable variableName="orderId"><![CDATA[attributes.uriParams.orderId]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<orders-system-api:create-invoice-by-order-id doc:name="Add invoice details" doc:id="00548d21-867b-4fc6-84be-11086cb0b9fb" config-ref="Orders_System_API_Config" order-id="#[vars.orderId]"/>
+		<orders-system-api:create-status-by-order-id doc:name="set Status to Billed" doc:id="28701d0b-05b2-4abc-a6b6-a29080bc0900" config-ref="Orders_System_API_Config" order-id="#[vars.orderId]">
+			<orders-system-api:create-status-by-order-id-request-data ><![CDATA[#[{"status": "Billed"}]]]></orders-system-api:create-status-by-order-id-request-data>
+		</orders-system-api:create-status-by-order-id>
+		<ee:transform doc:name="Transform Message" doc:id="f1eaab5d-63a0-41f8-bfc0-da870c23399d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Invoice data submitted."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="post:\orders\(orderId)\payments:application\json:order-manager-prc-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" doc:id="81f28a4c-c37e-48d0-b25a-b2aba0523edd">
+            <ee:variables>
+                <ee:set-variable variableName="orderId"><![CDATA[attributes.uriParams.orderId]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <orders-system-api:create-payment-by-order-id doc:name="Add payment details" doc:id="37613c72-5193-4428-aa99-5e8d90962735" config-ref="Orders_System_API_Config" order-id="#[vars.orderId]"/>
+		<orders-system-api:create-status-by-order-id doc:name="set order status to Paid" doc:id="3eccca5f-690f-4d2f-98c7-96dca4ed288c" config-ref="Orders_System_API_Config" order-id="#[vars.orderId]">
+			<orders-system-api:create-status-by-order-id-request-data ><![CDATA[#[{"status": "Paid"}]]]></orders-system-api:create-status-by-order-id-request-data>
+		</orders-system-api:create-status-by-order-id>
+		<ee:transform doc:name="Transform Message" doc:id="5e54b9e7-5eb8-41c4-82da-cb1032228e0f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Payment data submitted."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="post:\orders\(orderId)\shippingData:application\json:order-manager-prc-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" doc:id="aff3b528-ab97-4ebd-a8cb-f98d130b8e0d">
+            <ee:message />
+			<ee:variables>
+                <ee:set-variable variableName="orderId"><![CDATA[attributes.uriParams.orderId]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <orders-system-api:create-shipping-datum-by-order-id doc:name="Add shipping details" doc:id="3bdb43c2-c5fb-4295-8486-302c69531294" config-ref="Orders_System_API_Config" order-id="#[vars.orderId]"/>
+		<orders-system-api:create-status-by-order-id doc:name="Set order status to Fulfiled" doc:id="7e926321-3679-4f18-a81b-c11172cf0bd4" config-ref="Orders_System_API_Config" order-id="#[vars.orderId]">
+			<orders-system-api:create-status-by-order-id-request-data ><![CDATA[#[{"status": "Fulfiled"}]]]></orders-system-api:create-status-by-order-id-request-data>
+		</orders-system-api:create-status-by-order-id>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="63374301-6c94-47d6-9f56-1217334e273c">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Shipping data submitted."
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+</mule>

@@ -1,0 +1,125 @@
+#%RAML 1.0
+title: Orders System API
+version: 1.0.1
+baseUri: http://orders-system-api-db.us-e2.cloudhub.io/api
+
+
+types:
+  OrderShippingData:
+    properties:
+      shippedDateTime: datetime
+      shippingTrackingId: string
+      shippingPartner: string
+  OrderInvoiceData:
+    properties:
+      invoicedDateTime: datetime
+      invoiceAmount: number
+      invoiceId: string
+  OrderPaymentData:
+    properties:
+      paymentDateTime: datetime
+      paymentAmount: number
+      paymentExternalReference: string
+      paymentId: string
+  Order:
+    properties:
+      orderId: 
+        type: string
+        required: false
+      customerId: string
+      orderRef: string
+      orderAcceptedDateTime: 
+        type: datetime
+        required: false
+      orderDescription: 
+        type: string
+        required: false
+      orderTotalValue: number
+      status:
+        type: string
+        required: false
+      orderShippingData: 
+        type: OrderShippingData
+        required: false
+      orderinvoiceData: 
+        type: OrderInvoiceData
+        required: false
+      orderPaymentData: 
+        type: OrderPaymentData
+        required: false
+    # example: !include examples/order-example.raml
+  Orders:
+    properties:
+      resultCount: integer
+      orders: Order[]
+/orders:
+  get:
+    queryParameters:
+      status:
+        description: |
+          Used to retrieve orders with a specific status.
+          One of - submitted, fulfilled, billed, paid, or unpaid.
+        type: string
+        required: false
+      customerId:
+        description: |
+          Used to retrieve all orders by a specific customer.
+          One use case is to combine with status = unpaid to calculate total outstanding order value.
+        type: string
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: Orders
+  post:
+    body:
+      application/json:
+        type: Order
+    responses:
+      202:
+        body:
+          application/json:
+            example: {"orderId":"A00120180913101112", "orderAcceptedDateTime":"20180913T101112Z"}
+  /{orderId}/status:
+    post:
+      body: 
+        application/json:
+          properties: 
+            status:
+              type: string  
+              example: "Fulfiled"
+      responses: 
+        202:
+          body: 
+            application/json:
+              example: {"message": "success!"}
+  /{orderId}/shippingData:
+    post:
+      body:
+        application/json:
+          type: OrderShippingData
+      responses:
+        201:
+        403:
+          description: 403 Forbidden will be returned if shippingData is submtted for an order which has already been fulfilled.
+          body:
+            application/json:
+              example: |
+                {"message":"Shipping Data cannot be accepted for order {orderId}, as the order hs already been fulfilled."}
+
+  /{orderId}/invoices:
+    post:
+      body:
+        application/json:
+          type: OrderInvoiceData
+      responses:
+        201:
+
+  /{orderId}/payments:
+    post:
+      body:
+        application/json:
+          type: OrderPaymentData
+      responses:
+        201: 

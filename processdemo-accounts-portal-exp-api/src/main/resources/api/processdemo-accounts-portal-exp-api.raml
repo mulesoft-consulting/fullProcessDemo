@@ -1,0 +1,61 @@
+#%RAML 1.0
+version: v1
+title: ProcessDemo - Accounts Portal EXP API
+
+types:
+  Order:
+    properties:
+      orderId: string
+      customerId: string
+      orderRef: string
+      orderAcceptedDateTime: datetime
+      orderDescription: string
+      orderTotalValue: number
+  Orders:
+    properties:
+      resultCount: integer
+      orders: Order[]
+  OrderInvoiceData:
+    properties:
+      invoicedDateTime: datetime
+      invoiceAmount: number
+      invoiceId: string
+  OrderPaymentData:
+    properties:
+      paymentDateTime: datetime
+      paymentAmount: number
+      paymentExternalReference: string
+      paymentId: string
+
+/orders:
+  get:
+    queryParameters:
+      status:
+        type: string
+        example: "Fulfilled"
+    responses:
+      200:
+        body:
+          application/json:
+            type: Orders
+
+  /{orderId}/invoices:
+    post:
+      body:
+        application/json:
+          type: OrderInvoiceData
+      responses: 
+        201:
+          body: 
+            application/json:
+              example: {"message": "success."}
+  /{orderId}/payments:
+    post:
+      body:
+        application/json:
+          type: OrderPaymentData
+      responses: 
+        201:
+          body: 
+            application/json:
+              example: {"message": "success."}

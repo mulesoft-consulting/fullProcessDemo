@@ -1,0 +1,26 @@
+{
+  "configs": [
+    "orders-system-api.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "d4ba89fb-3685-4c53-8820-92812c6ad3f7:orders-system-api-db:1.0.0",
+  "minMuleVersion": "4.1.4",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "log4j2.xml",
+        "application-types.xml",
+        "api/examples/order-example.raml",
+        "api/orders-system-api.raml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
